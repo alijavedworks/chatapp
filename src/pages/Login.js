@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { auth } from "../firebase-config";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -10,25 +11,45 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Card, CardContent } from "@mui/material";
 import { styled } from "@mui/styles";
 import Typography from "@mui/material/Typography";
-import Header from "../components/Header";
+import { Alert } from "@mui/material";
+import { onAuthStateChanged } from "firebase/auth";
+import LoginServices from "../services/LoginServices";
+
+const MyCard = styled(Card)({
+  background: "linear-gradient(45deg, #f0c3ff 30%, #71e5ff 70%)",
+});
 
 export const Login = () => {
+  const [user, setUser] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+  });
+
+  const login = async () => {
+    try {
+      setError("");
+      setLoading(true);
+      const user = await LoginServices.Login(loginEmail, loginPassword);
+      navigate("../chats");
+    } catch (error) {
+      setError("Failed to Sign in");
+    }
+    setLoading(false);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    navigate("../chats");
+    login();
   };
-  const MyCard = styled(Card)({
-    background: "linear-gradient(45deg, #f0c3ff 30%, #71e5ff 70%)",
-  });
 
   return (
     <div>
-      <Header></Header>
       <Grid container spacing={0} alignItems="center" justifyContent="center">
         <Grid item xs={3}>
           <Box
@@ -62,6 +83,18 @@ export const Login = () => {
                   <Typography variant="h4" gutterBottom>
                     Login
                   </Typography>
+                  {error && (
+                    <Alert
+                      sx={{
+                        justifyContent: "center",
+                        my: 1,
+                        mx: 4,
+                      }}
+                      severity="error"
+                    >
+                      {error}
+                    </Alert>
+                  )}
                   <TextField
                     onChange={(event) => {
                       setLoginEmail(event.target.value);
@@ -73,7 +106,6 @@ export const Login = () => {
                     label="Email Address"
                     me="email"
                     autoComplete="email"
-                    autoFocus
                   />
 
                   <TextField

@@ -35,7 +35,7 @@ function Chats() {
           }}
         >
           <Toolbar />
-          <Box sx={{ overflow: "hidden" }}>
+          <Box sx={{ overflow: "auto" }}>
             <ContactList></ContactList>
           </Box>
         </Drawer>

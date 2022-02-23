@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
+import LoginServices from "../services/LoginServices";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,14 +13,27 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material";
-
-const settings = ["Profile", "Settings", "Logout"];
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const navigate = useNavigate();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
+  };
+
+  const handleProfile = () => {
+    setAnchorElUser(null);
+    navigate("../profile");
+  };
+  const handleHome = () => {
+    navigate("../");
+  };
+  const handleLogout = async () => {
+    setAnchorElUser(null);
+    await LoginServices.Logout();
+    navigate("../");
   };
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -30,10 +44,12 @@ const Header = () => {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl">
+      <Container maxWidth="true">
         <Toolbar disableGutters>
           <Typography textAlign="center">
-            <HomeButton color="secondary">Home</HomeButton>
+            <HomeButton onClick={handleHome} color="secondary">
+              Home
+            </HomeButton>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}></Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
@@ -63,11 +79,12 @@ const Header = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key="profile" onClick={handleProfile}>
+                <Typography textAlign="center">Profile</Typography>
+              </MenuItem>
+              <MenuItem key="Logout" onClick={handleLogout}>
+                <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

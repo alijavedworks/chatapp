@@ -1,6 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { auth } from "../firebase-config";
+import { onAuthStateChanged } from "firebase/auth";
+import LoginServices from "../services/LoginServices";
+import UserService from "../services/UserServices";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -10,26 +14,60 @@ import CreateIcon from "@mui/icons-material/Create";
 import { Card, CardContent } from "@mui/material";
 import { styled } from "@mui/styles";
 import Typography from "@mui/material/Typography";
-import Header from "../components/Header";
+import { Alert } from "@mui/material";
+
+const MyCard = styled(Card)({
+  background: "linear-gradient(45deg, #f0c3ff 30%, #71e5ff 70%)",
+});
 
 export default function Signup() {
+  const [user, setUser] = useState({});
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [name, setName] = useState("");
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+  });
+
+  const register = async () => {
+    if (registerPassword !== repeatPassword) {
+      return setError("passwords do no match");
+    } else if (registerEmail === "" || name === "") {
+      return setError("Empty Fields");
+    }
+    try {
+      setError("");
+      setLoading(true);
+      const authRes = await LoginServices.Signup(
+        registerEmail,
+        registerPassword
+      );
+      const userId = authRes.user.uid;
+      const newUser = {
+        registerEmail,
+        name,
+        uid: userId,
+      };
+      await UserService.addUser(newUser);
+      navigate("../chats");
+    } catch (error) {
+      console.log(error);
+      setError("failed to create an account");
+    }
+    setLoading(false);
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    navigate("../chats");
+    register();
   };
-  const MyCard = styled(Card)({
-    background: "linear-gradient(45deg, #f0c3ff 30%, #71e5ff 70%)",
-  });
+
   return (
     <div>
-      <Header></Header>
       <Grid container spacing={0} alignItems="center" justifyContent="center">
         <Grid item xs={3}>
           <Box
@@ -45,6 +83,7 @@ export default function Signup() {
             spacing={2}
             justify="center"
             style={{ minHeight: "70vh" }}
+            // autoFocus
             autoComplete="off"
           >
             <div>
@@ -63,6 +102,18 @@ export default function Signup() {
                   <Typography variant="h5" gutterBottom>
                     Sign up for new account
                   </Typography>
+                  {error && (
+                    <Alert
+                      sx={{
+                        justifyContent: "center",
+                        my: 1,
+                        mx: 8,
+                      }}
+                      severity="error"
+                    >
+                      {error}
+                    </Alert>
+                  )}
                   <TextField
                     onChange={(event) => {
                       setRegisterEmail(event.target.value);
@@ -72,7 +123,6 @@ export default function Signup() {
                     required
                     id="email"
                     label="Email Address"
-                    autoFocus
                   />
                   <TextField
                     onChange={(event) => {
@@ -82,8 +132,8 @@ export default function Signup() {
                     margin="normal"
                     required
                     id="name"
-                    label="Name"
-                    autoFocus
+                    label="Username"
+                    name="name"
                   />
 
                   <TextField
@@ -104,7 +154,7 @@ export default function Signup() {
                     margin="normal"
                     id="repeat-password"
                     label="Repeat Password"
-                    type="repeat-password"
+                    type="password"
                   />
                   <Stack
                     direction="column"
