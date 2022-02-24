@@ -1,3 +1,31 @@
 body {
-  background-color: #DAF6FD;
+  background-color: #daf6fd;
+  background-image: linear-gradient(#fdf8ff, #ddf9ff);
+}
+.container {
+  background-image: linear-gradient(#fdf8ff, #ddf9ff);
+}
+.message_container {
+  position: relative;
+  width: 100%;
+  height: 50%;
+}
+.message_user {
+  padding: 1px;
+  text-align: center;
+  border-bottom: 2px solid;
+}
+.no_conv {
+  font-size: 20px;
+  color: #262727;
+  text-align: center;
+}
+.message {
+  height: calc(100vh-20px);
+  overflow-y: auto;
+  border-bottom: 1px solid #020202;
+}
+.message_wrapper {
+  margin-top: 5px;
+  padding: 0px 5px;
 }

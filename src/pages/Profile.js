@@ -32,6 +32,7 @@ function Profile() {
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("uid", "==", [auth.currentUser.uid]));
     const unsub = onSnapshot(q, (querySnapShot) => {
+      let users = [];
       querySnapShot.forEach((doc) => {
         users.push(doc.data());
       });
