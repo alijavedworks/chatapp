@@ -7,6 +7,8 @@ import {
   deleteDoc,
   setDoc,
   doc,
+  query,
+  where,
 } from "firebase/firestore";
 
 const usersCollectionRef = collection(db, "users");
@@ -35,5 +37,9 @@ export default class UserService {
   static getUser = (id) => {
     const userDoc = doc(db, "users", id);
     return getDoc(userDoc);
+  };
+  static getUsersByName = (name) => {
+    const q = query(collection(db, "users"), where("name", "==", name));
+    return getDocs(q);
   };
 }

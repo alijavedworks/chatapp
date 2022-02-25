@@ -27,18 +27,20 @@ function Users({ user, selectUser, user1, chat }) {
               alt="avater"
               className="avatar"
             ></img>
-            <h4>{user.name}</h4>
-            {data?.from !== user1 && data?.unread && (
-              <small className="unread">New</small>
-            )}
+            <div className="chatroom-info">
+              <h4>{user.name}</h4>
+              {data?.from !== user1 && data?.unread && (
+                <small className="unread">New</small>
+              )}
+              {data && (
+                <div className="truncate">
+                  <strong>{data.from === user1 ? "Me: " : null}</strong>
+                  {data.text}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        {data && (
-          <p className="truncate">
-            <strong>{data.from === user1 ? "Me:" : null}</strong>
-            {data.text}
-          </p>
-        )}
       </div>
       <div
         onClick={() => selectUser(user)}

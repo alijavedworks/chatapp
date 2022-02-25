@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useState, useEffect } from "react";
 import { AuthContext } from "../context/auth";
-import { UserService } from "../services/UserServices";
 import { auth, db } from "../firebase-config";
 import { Grid } from "@mui/material";
 import { Box } from "@mui/material";
@@ -15,8 +14,6 @@ import TableRow from "@mui/material/TableRow";
 import { Card, CardContent } from "@mui/material";
 import { styled } from "@mui/styles";
 import PersonIcon from "@mui/icons-material/Person";
-import Header from "../components/Header";
-import { doc, getDoc } from "firebase/firestore";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 const MyCard = styled(Card)({
@@ -26,8 +23,7 @@ const MyCard = styled(Card)({
 function Profile() {
   const [data, setData] = useState("");
   const { user } = useContext(AuthContext);
-  const [users, setUsers] = useState([]);
-
+  const user1 = auth.currentUser.uid;
   useEffect(() => {
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("uid", "==", [auth.currentUser.uid]));
@@ -36,11 +32,11 @@ function Profile() {
       querySnapShot.forEach((doc) => {
         users.push(doc.data());
       });
-      setUsers(users);
+      setData(users);
     });
     return () => unsub();
   }, []);
-
+  console.log(data);
   return (
     <div>
       <Grid container spacing={0} alignItems="center" justifyContent="center">
@@ -73,13 +69,12 @@ function Profile() {
                 <CardContent>
                   <PersonIcon />
                   <h2>Profile</h2>
-                  {console.log(users.email)}
                   <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 200 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
                           <TableCell>Full Name</TableCell>
-                          <TableCell align="right">{users.name}</TableCell>
+                          <TableCell align="right">{data.name}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>

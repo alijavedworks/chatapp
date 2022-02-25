@@ -26,7 +26,6 @@ export default function NewChat({ users, selectUser }) {
   const handleClose = () => {
     setOpen(false);
   };
-
   const descriptionElementRef = useRef(null);
   useEffect(() => {
     if (open) {
@@ -69,7 +68,9 @@ export default function NewChat({ users, selectUser }) {
               {users.map((user) => {
                 return (
                   <ListItem key={user} disablePadding>
-                    <ListItemButton>
+                    <ListItemButton
+                      onClick={() => [selectUser(user), setOpen(false)]}
+                    >
                       <ListItemAvatar>
                         <Avatar
                           alt={`Avatar n°${user + 1}`}

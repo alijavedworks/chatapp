@@ -18,29 +18,27 @@ body {
 .users_container {
   justify-content: center;
   align-items: center;
-  text-align: center;
   border-right: 2px solid #5d91af;
   overflow-y: auto;
 }
-.user_items {
-  overflow-y: auto;
+.users_items {
+  align-items: center;
+  margin-bottom: 20px;
 }
 .user_wrapper {
-  margin-bottom: 10px;
   padding: 10px;
   cursor: pointer;
 }
 .user_info {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 .user_detail {
   display: flex;
-  align-items: center;
 }
 .user_detail h4 {
-  margin-left: 10px;
+  white-space: nowrap;
+  margin: 0px 0px 0px 0px;
 }
 .avatar {
   width: 50px;
@@ -58,7 +56,11 @@ body {
   padding: 2px;
   text-align: center;
   border-bottom: 2px solid #4876f3;
-  background-color: #1976d2;
+  background-color: #dbedff;
+}
+.messages_user h4 {
+  white-space: nowrap;
+  margin: 0px 0px 0px 10px;
 }
 .no_conv {
   font-size: 20px;
@@ -74,19 +76,8 @@ body {
   display: flex;
   align-items: center;
 }
-.message_form input {
-  width: 40vw;
-  margin: 0px 10px 10px;
-  padding: 10px;
-  border-radius: 5px;
-  outline: none;
-  border: none;
-}
-.message_form .btn {
-  margin-top: -10px;
-}
 .messages {
-  height: calc(100vh - 280px);
+  height: calc(100vh - 240px);
   overflow-y: auto;
   border-bottom: 1px solid #006bcf;
 }
@@ -94,10 +85,10 @@ body {
   margin-top: 5px;
   padding: 0px 5px;
 }
-.message_wrapper img {
-  width: 100%;
-  border-radius: 5px;
+.message_name {
+  font-size: 10px;
 }
+
 .message_wrapper p {
   padding: 5px;
   display: inline-block;
@@ -107,7 +98,7 @@ body {
 }
 .message_wrapper small {
   display: inline-block;
-  margin-top: 15px;
+  margin-top: 0px;
   opacity: 0.8;
 }
 .message_wrapper.own {
@@ -116,8 +107,13 @@ body {
 .me {
   background: #006ce7;
   color: white;
+  margin: 0px 0px 0px 10px;
+}
+.time {
+  margin: 0px 0px 0px 10px;
 }
 .friend {
+  margin: 0px 0px 0px 10px;
   background: #dc84ff;
 }
 .selected_user {
@@ -126,12 +122,9 @@ body {
 .truncate {
   font-size: 10px;
   white-space: nowrap;
-  width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.truncate strong {
-  margin-right: 10px;
+  width: 120px;
 }
 .unread {
   margin-left: 10px;
@@ -142,6 +135,10 @@ body {
 }
 .sm_screen {
   display: none;
+}
+
+.chatroom-info {
+  margin-left: 8px;
 }
 @media screen and (max-width: 767px) {
   .home_container {

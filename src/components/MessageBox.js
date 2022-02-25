@@ -5,7 +5,7 @@ import { Stack } from "@mui/material";
 import { Box } from "@mui/system";
 import SendIcon from "@mui/icons-material/Send";
 
-function MessageBox({ handleSubmit, text, setText }) {
+function MessageBox({ handleSubmit, text, setText, loading }) {
   return (
     <div>
       <Box
@@ -16,13 +16,10 @@ function MessageBox({ handleSubmit, text, setText }) {
         autoComplete="off"
       >
         <TextField
-          maxwidth
           fullWidth
-          multiline
           rows={2}
           value={text}
           onChange={(e) => {
-            console.log(e.target.value);
             setText(e.target.value);
           }}
           id="message-box"
@@ -41,6 +38,7 @@ function MessageBox({ handleSubmit, text, setText }) {
             sx={{ mx: 3, my: 1 }}
             color="primary"
             type="submit"
+            disabled={loading}
             variant="contained"
             endIcon={<SendIcon />}
           >

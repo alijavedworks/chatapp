@@ -14,10 +14,18 @@ import Typography from "@mui/material/Typography";
 import { Alert } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
 import LoginServices from "../services/LoginServices";
+import UserService from "../services/UserServices";
 
 const MyCard = styled(Card)({
   background: "linear-gradient(45deg, #f0c3ff 30%, #71e5ff 70%)",
 });
+
+const isEmail = (input) =>
+  input.match(
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+  )
+    ? true
+    : false;
 
 export const Login = () => {
   const [user, setUser] = useState("");
@@ -33,11 +41,22 @@ export const Login = () => {
 
   const login = async () => {
     try {
+      let shouldBeEmail = loginEmail;
       setError("");
       setLoading(true);
-      const user = await LoginServices.Login(loginEmail, loginPassword);
+      // check if username or email
+      if (!isEmail(shouldBeEmail)) {
+        // get Email from user
+        console.log("here");
+        const snapshot = await UserService.getUsersByName(shouldBeEmail);
+        const user = snapshot.docs[0]?.data();
+        if (!user) throw "Invalid username";
+        shouldBeEmail = user.registerEmail;
+      }
+      const user = await LoginServices.Login(shouldBeEmail, loginPassword);
       navigate("../chats", { replace: true });
     } catch (error) {
+      console.error(error);
       setError("Failed to Sign in");
     }
     setLoading(false);

@@ -29,7 +29,7 @@ const Header = () => {
     navigate("../profile");
   };
   const handleHome = () => {
-    navigate("../");
+    navigate("../chats");
   };
   const handleLogin = () => {
     navigate("../login");
@@ -37,9 +37,9 @@ const Header = () => {
   const handleSignup = () => {
     navigate("../signup");
   };
-  const handleLogout = async () => {
+  const handleLogout = () => {
     setAnchorElUser(null);
-    await LoginServices.Logout();
+    LoginServices.Logout();
     navigate("../login");
   };
   const handleCloseUserMenu = () => {
@@ -51,13 +51,13 @@ const Header = () => {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="true">
+      <Container>
         <Toolbar disableGutters>
-          <Typography textAlign="center">
+          {/* <Typography textAlign="center">
             <HomeButton onClick={handleHome} color="secondary">
               Home
             </HomeButton>
-          </Typography>
+          </Typography> */}
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}></Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
 
@@ -88,9 +88,9 @@ const Header = () => {
             >
               {auth.currentUser ? (
                 <div>
-                  <MenuItem key="profile" onClick={handleProfile}>
+                  {/* <MenuItem key="profile" onClick={handleProfile}>
                     <Typography textAlign="center">Profile</Typography>
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem key="Logout" onClick={handleLogout}>
                     <Typography textAlign="center">Logout</Typography>
                   </MenuItem>
