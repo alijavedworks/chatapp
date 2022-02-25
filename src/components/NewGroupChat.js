@@ -15,7 +15,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { Checkbox } from "@mui/material";
 import GroupsIcon from "@mui/icons-material/Groups";
 
-export default function NewGroupChat() {
+export default function NewGroupChat({ users, selectUser }) {
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState("paper");
 
@@ -80,16 +80,16 @@ export default function NewGroupChat() {
               dense
               sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
             >
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => {
-                const labelId = `checkbox-list-secondary-label-${value}`;
+              {users.map((user) => {
+                const labelId = `checkbox-list-secondary-label-${user}`;
                 return (
                   <ListItem
-                    key={value}
+                    key={user}
                     secondaryAction={
                       <Checkbox
                         edge="end"
-                        onChange={handleToggle(value)}
-                        checked={checked.indexOf(value) !== -1}
+                        onChange={handleToggle(user)}
+                        checked={checked.indexOf(user) !== -1}
                         inputProps={{ "aria-labelledby": labelId }}
                       />
                     }
@@ -98,14 +98,11 @@ export default function NewGroupChat() {
                     <ListItemButton>
                       <ListItemAvatar>
                         <Avatar
-                          alt={`Avatar n°${value + 1}`}
+                          alt={`Avatar n°${user + 1}`}
                           src={`https://www.w3schools.com/howto/img_avatar.png`}
                         />
                       </ListItemAvatar>
-                      <ListItemText
-                        id={labelId}
-                        primary={`Contact ${value + 1}`}
-                      />
+                      <ListItemText id={labelId} primary={user.name} />
                     </ListItemButton>
                   </ListItem>
                 );

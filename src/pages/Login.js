@@ -36,7 +36,7 @@ export const Login = () => {
       setError("");
       setLoading(true);
       const user = await LoginServices.Login(loginEmail, loginPassword);
-      navigate("../chats");
+      navigate("../chats", { replace: true });
     } catch (error) {
       setError("Failed to Sign in");
     }

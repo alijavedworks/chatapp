@@ -8,7 +8,6 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import { useRef } from "react";
 
 const usersCollectionRef = collection(db, "users");
 

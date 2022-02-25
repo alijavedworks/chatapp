@@ -19,7 +19,7 @@ function MessageBox({ handleSubmit, text, setText }) {
           maxwidth
           fullWidth
           multiline
-          rows={3}
+          rows={2}
           value={text}
           onChange={(e) => {
             console.log(e.target.value);

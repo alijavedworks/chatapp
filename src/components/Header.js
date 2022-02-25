@@ -14,6 +14,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase-config";
 
 const Header = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -30,10 +31,16 @@ const Header = () => {
   const handleHome = () => {
     navigate("../");
   };
+  const handleLogin = () => {
+    navigate("../login");
+  };
+  const handleSignup = () => {
+    navigate("../signup");
+  };
   const handleLogout = async () => {
     setAnchorElUser(null);
     await LoginServices.Logout();
-    navigate("../");
+    navigate("../login");
   };
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -79,12 +86,25 @@ const Header = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem key="profile" onClick={handleProfile}>
-                <Typography textAlign="center">Profile</Typography>
-              </MenuItem>
-              <MenuItem key="Logout" onClick={handleLogout}>
-                <Typography textAlign="center">Logout</Typography>
-              </MenuItem>
+              {auth.currentUser ? (
+                <div>
+                  <MenuItem key="profile" onClick={handleProfile}>
+                    <Typography textAlign="center">Profile</Typography>
+                  </MenuItem>
+                  <MenuItem key="Logout" onClick={handleLogout}>
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                </div>
+              ) : (
+                <div>
+                  <MenuItem key="login" onClick={handleLogin}>
+                    <Typography textAlign="center">Login</Typography>
+                  </MenuItem>
+                  <MenuItem key="signup" onClick={handleSignup}>
+                    <Typography textAlign="center">Sign up</Typography>
+                  </MenuItem>
+                </div>
+              )}
             </Menu>
           </Box>
         </Toolbar>

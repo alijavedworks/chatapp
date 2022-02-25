@@ -6,6 +6,7 @@ function Searchbar() {
     <div>
       <TextField
         id="Search Contact"
+        margin="normal"
         color="secondary"
         label="Search Contact"
         type="search"

@@ -43,7 +43,6 @@ function Profile() {
 
   return (
     <div>
-      <Header></Header>
       <Grid container spacing={0} alignItems="center" justifyContent="center">
         <Grid item xs={3}>
           <Box

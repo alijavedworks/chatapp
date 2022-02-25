@@ -4,17 +4,11 @@ import "./chat.css";
 import Header from "../components/Header";
 import MessageBox from "../components/MessageBox";
 import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
 import { Stack } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
-import Toolbar from "@mui/material/Toolbar";
 import { AppBar } from "@mui/material";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import Searchbar from "../components/Searchbar";
 import NewGroupChat from "../components/NewGroupChat";
 import NewChat from "../components/NewChat";
-import { Typography } from "@mui/material";
 import Message from "../components/Message";
 import {
   collection,
@@ -24,11 +18,14 @@ import {
   addDoc,
   Timestamp,
   orderBy,
+  setDoc,
+  doc,
+  getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { auth } from "../firebase-config";
 import { db } from "../firebase-config";
-import User from "../components/User";
-const drawerWidth = 240;
+import Users from "../components/Users";
 
 function Chats() {
   const [users, setUsers] = useState([]);
@@ -50,10 +47,8 @@ function Chats() {
     return () => unsub();
   }, []);
 
-  const selectUser = (user) => {
+  const selectUser = async (user) => {
     setChat(user);
-    console.log(user);
-
     const user2 = user.uid;
     const id = user1 > user2 ? `${user1 + user2}` : `${user2 + user1}`;
     const msgsRef = collection(db, "messages", id, "chat");
@@ -66,8 +61,11 @@ function Chats() {
       });
       setMsgs(msgs);
     });
+    const docSnap = await getDoc(doc(db, "lastMsg", id));
+    if (docSnap.data() && docSnap.data().from !== user1) {
+      await updateDoc(doc(db, "lastMsg", id), { unread: false });
+    }
   };
-  console.log(msgs);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,87 +79,60 @@ function Chats() {
       to: user2,
       createdAt: Timestamp.fromDate(new Date()),
     });
+
+    await setDoc(doc(db, "lastMsg", id), {
+      text,
+      from: user1,
+      to: user2,
+      createdAt: Timestamp.fromDate(new Date()),
+      unread: true,
+    });
     setText("");
   };
 
   return (
     <div className="container">
-      <Box sx={{ display: "flex" }}>
+      <div className="home_container">
         <AppBar
           position="fixed"
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        >
-          <Header></Header>
-        </AppBar>
-        <CssBaseline />
+        ></AppBar>
+        <div className="users_container">
+          <Searchbar />
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
+          >
+            <NewChat users={users} selectUser={selectUser} />
+            <NewGroupChat users={users} selectUser={selectUser} />
+          </Stack>
 
-        <Drawer
-          variant="permanent"
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            [`& .MuiDrawer-paper`]: {
-              width: drawerWidth,
-              boxSizing: "border-box",
-            },
-          }}
-        >
-          <Toolbar />
-          <Box sx={{ overflow: "auto" }}>
-            <div className="home_container">
-              <div className="users_container">
-                <List
-                  dense
-                  sx={{
-                    width: "100%",
-                    maxWidth: 360,
-                    bgcolor: "background.paper",
-                  }}
-                >
-                  <ListItem>{<Searchbar />}</ListItem>
-                  <Stack
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <NewChat />
-                    <NewGroupChat />
-                  </Stack>
-                </List>
-                {users.map((user) => (
-                  <User key={user.uid} user={user} selectUser={selectUser} />
-                ))}
-              </div>
-            </div>
-          </Box>
-        </Drawer>
+          {users.map((user) => (
+            <Users
+              key={user.uid}
+              user={user}
+              selectUser={selectUser}
+              user1={user1}
+              chat={chat}
+            />
+          ))}
+        </div>
 
-        <div className="message_container">
+        <div className="messages_container">
           {chat ? (
             <div>
-              <Box component="main" sx={{ flexGrow: 1, m: 1, ml: 3 }}>
-                <Toolbar />
-
-                <div className="message_user">
-                  <h3>{chat.name}</h3>
-                </div>
-                <div className="message">
-                  <Box
-                    sx={{
-                      flexGrow: 1,
-                      maxHeight: "10%",
-                      overflow: "auto",
-                      mb: 1,
-                      my: 1,
-                    }}
-                  >
-                    {msgs.length
-                      ? msgs.map((msg, i) => <Message keys={i} msg={msg} />)
-                      : null}
-                  </Box>
-                </div>
-              </Box>
+              <div className="messages_user">
+                <h3>{chat.name}</h3>
+              </div>
+              <div className="messages">
+                {msgs.length
+                  ? msgs.map((msg, i) => (
+                      <Message keys={i} msg={msg} user1={user1} />
+                    ))
+                  : null}
+              </div>
               <div>
                 <Box sx={{ flexGrow: 1, mr: 3, ml: 3 }}>
                   <MessageBox
@@ -173,10 +144,10 @@ function Chats() {
               </div>
             </div>
           ) : (
-            <h3 className="no_user">Select a user to start a converstation</h3>
+            <h3 className="no_conv">Select a user to start a converstation</h3>
           )}
         </div>
-      </Box>
+      </div>
     </div>
   );
 }

@@ -14,7 +14,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import ChatIcon from "@mui/icons-material/Chat";
 
-export default function NewChat() {
+export default function NewChat({ users, selectUser }) {
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState("paper");
 
@@ -66,23 +66,19 @@ export default function NewChat() {
               dense
               sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
             >
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => {
-                const labelId = `Contact-${value}`;
+              {users.map((user) => {
                 return (
-                  <ListItem key={value} disablePadding>
+                  <ListItem key={user} disablePadding>
                     <ListItemButton>
                       <ListItemAvatar>
                         <Avatar
-                          alt={`Avatar n°${value + 1}`}
+                          alt={`Avatar n°${user + 1}`}
                           src={`https://www.w3schools.com/howto/img_avatar.png`}
                           //src={`/static/images/avatar/${value + 1}.jpg`}
                         />
                       </ListItemAvatar>
                       <ListItemText />
-                      <ListItemText
-                        id={labelId}
-                        primary={`Contact ${value + 1}`}
-                      />
+                      <ListItemText id={user} primary={user.name} />
                     </ListItemButton>
                   </ListItem>
                 );
